@@ -19,3 +19,14 @@ SELECT title FROM film ORDER BY length ASC LIMIT 10;
 SELECT title FROM film WHERE length = (SELECT MAX(length) FROM film);
 10) Find all movies that have deleted scenes
 SELECT title FROM film WHERE special_features LIKE '%Deleted Scenes%';
+11) Using HAVING, reverse-alphabetically list the last names that are not repeated
+SELECT last_name FROM actor GROUP BY last_name HAVING COUNT(last_name) = 1 ORDER BY last_name DESC;
+12) Using HAVING, list the last names that appear more than once, from highest to lowest frequency
+SELECT last_name FROM actor GROUP BY last_name HAVING COUNT(last_name) != 1 ORDER BY COUNT(last_name) DESC;
+13) Which actor has appeared in the most films?
+CREATE VIEW film_actor_names AS SELECT a.actor_id, a.first_name, a.last_name, f.film_id FROM actor a JOIN film_actor f ON a.actor_id=f.actor_id;
+SELECT first_name, last_name FROM film_actor_names GROUP BY actor_id ORDER BY COUNT(film_id) DESC LIMIT 1;
+14) When is 'Academy Dinosaur' due?
+SELECT return_date FROM rental WHERE inventory_id BETWEEN (SELECT MIN(inventory_id FROM inventory WHERE film_id = (SELECT film_id FROM film WHERE title = 'Academy Dinosaur')) AND (SELECT MAX(inventory_id) FROM inventory WHERE film_id = (SELECT film_id FROM film WHERE title = 'Academy Dinosaur'));
+15) What is the average runtime of all films?
+SELECT AVG(length) FROM film;
