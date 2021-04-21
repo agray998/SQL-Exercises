@@ -30,3 +30,15 @@ SELECT first_name, last_name FROM film_actor_names GROUP BY actor_id ORDER BY CO
 SELECT return_date FROM rental WHERE inventory_id BETWEEN (SELECT MIN(inventory_id FROM inventory WHERE film_id = (SELECT film_id FROM film WHERE title = 'Academy Dinosaur')) AND (SELECT MAX(inventory_id) FROM inventory WHERE film_id = (SELECT film_id FROM film WHERE title = 'Academy Dinosaur'));
 15) What is the average runtime of all films?
 SELECT AVG(length) FROM film;
+16) List the average runtime for every film category
+CREATE VIEW film_cat_name AS SELECT f.film_id, c.name FROM film_category f JOIN category c ON f.category_id=c.category_id;
+CREATE VIEW film_name_cat_name AS SELECT f.title, f.length, fc.name FROM film f JOIN film_cat_name fc ON f.film_id=fc.film_id;
+SELECT AVG(length), name AS cat_name FROM film_name_cat_name GROUP BY name;
+17) List all movies featuring a robot
+SELECT title FROM film WHERE description LIKE '%robot%';
+18) How many movies were released in 2010?
+SELECT COUNT(film_id) FROM film WHERE release_year = 2010;
+19) Find the titles of all the horror movies
+SELECT title FROM film_name_cat_name WHERE name = 'Horror';
+20) List the full name of the staff member with the ID 2
+SELECT first_name, last_name FROM staff WHERE staff_id = 2;
