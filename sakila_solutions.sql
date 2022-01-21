@@ -27,7 +27,7 @@ SELECT last_name FROM actor GROUP BY last_name HAVING COUNT(last_name) != 1 ORDE
 CREATE VIEW film_actor_names AS SELECT a.actor_id, a.first_name, a.last_name, f.film_id FROM actor a JOIN film_actor f ON a.actor_id=f.actor_id;
 SELECT first_name, last_name FROM film_actor_names GROUP BY actor_id ORDER BY COUNT(film_id) DESC LIMIT 1;
 --14) When is 'Academy Dinosaur' due?
-SELECT return_date FROM rental WHERE inventory_id BETWEEN (SELECT MIN(inventory_id FROM inventory WHERE film_id = (SELECT film_id FROM film WHERE title = 'Academy Dinosaur'))) AND (SELECT MAX(inventory_id) FROM inventory WHERE film_id = (SELECT film_id FROM film WHERE title = 'Academy Dinosaur'));
+SELECT f.title, r.rental_date, f.rental_duration, DATE_ADD(r.rental_date, INTERVAL f.rental_duration DAY) AS due_date FROM (rental r JOIN inventory i ON r.inventory_id = i.inventory_id) JOIN film f ON f.film_id = i.film_id WHERE f.title = 'ACADEMY DINOSAUR' AND r.return_date IS NULL;
 --15) What is the average runtime of all films?
 SELECT AVG(length) FROM film;
 --16) List the average runtime for every film category
