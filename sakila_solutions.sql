@@ -45,7 +45,7 @@ SELECT first_name, last_name FROM staff WHERE staff_id = 2;
 -- 21) List all the movies that Fred Costner has appeared in
 SELECT title FROM film WHERE film_id IN (SELECT film_id FROM film_actor_names WHERE first_name = 'Fred' AND last_name = 'Costner');
 -- 22) How many distinct countries are there?
-SELECT COUNT(country_id) FROM country;
+SELECT COUNT(DISTINCT country) FROM country;
 -- 23) List the name of every language in reverse-alphabetical order
 SELECT name FROM language ORDER BY name DESC;
 -- 24) List the full names of every actor whose surname ends with '-son' in alphabetical order by their forename
