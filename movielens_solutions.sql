@@ -8,9 +8,10 @@ CREATE VIEW avgs AS (SELECT movie_id, title, AVG(rating) AS average_rating FROM 
 SELECT movie_id, title, average_rating FROM avgs WHERE average_rating=(SELECT MIN(average_rating) FROM avgs);
 
 -- 3) List the unique records for Sci-Fi movies where male 40-year-old students have given 5-star ratings.
-CREATE VIEW usersratings AS (SELECT r.id, r.user_id, r.movie_id, r.rating, r.rated_at, u.age, u.gender, u.occupation_id, u.zip_code FROM ratings r JOIN users u ON r.user_id=u.id);
-CREATE VIEW usersratingsocc AS (SELECT ur.id, ur.user_id, ur.movie_id, ur.rating, ur.rated_at, ur.age, ur.gender, ur.occupation_id, ur.zip_code, o.name FROM usersratings ur JOIN occupations o ON ur.user_id=o.id);
-SELECT DISTINCT movie_id FROM usersratingsocc WHERE age = 40 AND gender='M' AND name='Student' AND rating=5;
+CREATE VIEW usersratings AS (SELECT r.id AS rating_id, r.user_id, r.movie_id, r.rating, u.age, u.gender, u.occupation_id FROM ratings r JOIN users u ON r.user_id=u.id);
+CREATE VIEW usersratingsocc AS (SELECT ur.rating_id, ur.user_id, ur.movie_id, ur.rating, ur.age, ur.gender, ur.occupation_id, o.name AS occ_name FROM usersratings ur JOIN occupations o ON ur.occupation_id=o.id);
+CREATE VIEW genres_included AS (SELECT u.*, gm.genre_id, g.name FROM usersratingsocc u NATURAL JOIN genres_movies gm JOIN genres g ON gm.genre_id = g.id);
+SELECT DISTINCT movie_id FROM genres_included WHERE age = 40 AND gender='M' AND occ_name='Student' AND rating=5 AND name = "Sci-Fi";
 
 -- 4) List the unique titles of each of the movies released on the most popular release day.
 CREATE VIEW release_date_freqs AS (SELECT release_date, COUNT(id) AS num_films FROM movies GROUP BY release_date);
