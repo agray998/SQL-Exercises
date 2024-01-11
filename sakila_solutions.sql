@@ -58,7 +58,18 @@ SELECT title FROM film_name_cat_name WHERE name = 'Horror';
 -- 20) List the full name of the staff member with the ID 2
 SELECT first_name, last_name FROM staff WHERE staff_id = 2;
 -- 21) List all the movies that Fred Costner has appeared in
-SELECT title FROM film WHERE film_id IN (SELECT film_id FROM film_actor_names WHERE first_name = 'Fred' AND last_name = 'Costner');
+SELECT title 
+FROM film 
+WHERE film_id IN (
+	SELECT film_id 
+	FROM film_actor
+    WHERE actor_id = (
+		SELECT actor_id
+		FROM actor
+		WHERE first_name = 'Fred' 
+		AND last_name = 'Costner'
+    )
+);
 -- 22) How many distinct countries are there?
 SELECT COUNT(DISTINCT country) FROM country;
 -- 23) List the name of every language in reverse-alphabetical order
