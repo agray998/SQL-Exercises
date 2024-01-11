@@ -27,7 +27,7 @@ SELECT last_name FROM actor GROUP BY last_name HAVING COUNT(last_name) != 1 ORDE
 SELECT first_name, last_name 
 FROM actor a 
 JOIN film_actor f 
-ON a.actor_id=f.actor_id
+USING (`actor_id`)
 GROUP BY f.actor_id 
 ORDER BY COUNT(film_id) DESC 
 LIMIT 1;
@@ -37,10 +37,10 @@ DATE_ADD(r.rental_date, INTERVAL f.rental_duration DAY) AS due_date
 FROM (
     rental r 
     JOIN inventory i 
-    ON r.inventory_id = i.inventory_id
+    USING (`inventory_id`)
     ) 
 JOIN film f 
-ON f.film_id = i.film_id 
+USING (`film_id`)
 WHERE f.title = 'ACADEMY DINOSAUR' 
 AND r.return_date IS NULL;
 -- 15) What is the average runtime of all films?
@@ -54,9 +54,9 @@ FROM (
 		SELECT f.film_id, c.name 
 		FROM film_category f 
 		JOIN category c 
-		ON f.category_id=c.category_id
+		USING (`category_id`)
     ) fc 
-	ON f.film_id=fc.film_id
+	USING (`film_id`)
 ) fcn
 GROUP BY cat_name;
 -- 17) List all movies featuring a robot
@@ -64,7 +64,19 @@ SELECT title FROM film WHERE description LIKE '%robot%';
 -- 18) How many movies were released in 2010?
 SELECT COUNT(film_id) FROM film WHERE release_year = 2010;
 -- 19) Find the titles of all the horror movies
-SELECT title FROM film_name_cat_name WHERE name = 'Horror';
+SELECT title 
+FROM (
+	SELECT f.title, f.length, fc.name 
+	FROM film f 
+	JOIN (
+		SELECT f.film_id, c.name 
+		FROM film_category f 
+		JOIN category c 
+		USING (`category_id`)
+    ) fc 
+	USING (`film_id`)
+) fcn 
+WHERE name = 'Horror';
 -- 20) List the full name of the staff member with the ID 2
 SELECT first_name, last_name FROM staff WHERE staff_id = 2;
 -- 21) List all the movies that Fred Costner has appeared in
