@@ -46,9 +46,19 @@ AND r.return_date IS NULL;
 -- 15) What is the average runtime of all films?
 SELECT AVG(length) FROM film;
 -- 16) List the average runtime for every film category
-CREATE VIEW film_cat_name AS SELECT f.film_id, c.name FROM film_category f JOIN category c ON f.category_id=c.category_id;
-CREATE VIEW film_name_cat_name AS SELECT f.title, f.length, fc.name FROM film f JOIN film_cat_name fc ON f.film_id=fc.film_id;
-SELECT AVG(length), name AS cat_name FROM film_name_cat_name GROUP BY name;
+SELECT AVG(length), name AS cat_name 
+FROM (
+	SELECT f.title, f.length, fc.name 
+	FROM film f 
+	JOIN (
+		SELECT f.film_id, c.name 
+		FROM film_category f 
+		JOIN category c 
+		ON f.category_id=c.category_id
+    ) fc 
+	ON f.film_id=fc.film_id
+) fcn
+GROUP BY cat_name;
 -- 17) List all movies featuring a robot
 SELECT title FROM film WHERE description LIKE '%robot%';
 -- 18) How many movies were released in 2010?
